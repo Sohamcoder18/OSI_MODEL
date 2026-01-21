@@ -1,0 +1,19 @@
+﻿# Auto-normalize line endings for all text files
+* text=auto
+
+# Explicitly set line endings for common file types
+*.py text eol=lf
+*.js text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.bat text eol=crlf
+*.sh text eol=lf
+*.json text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary

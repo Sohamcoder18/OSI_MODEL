@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSI vs TCP/IP Model Visual Simulator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <h1>OSI vs TCP/IP Model Visual Simulator</h1>
+            <p class="subtitle">Interactive Educational Tool for Network Models</p>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container main-container">
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <button id="startBtn" class="btn btn-primary">Start Transmission</button>
+            <button id="resetBtn" class="btn btn-secondary">Reset</button>
+            <button id="helpBtn" class="btn btn-info">Help</button>
+        </div>
+
+        <!-- Message Animation Section -->
+        <div class="message-animation-section">
+            <h2>📨 Interactive Message Animation</h2>
+            <div class="message-input-container">
+                <input type="text" id="messageInput" class="message-input" placeholder="Enter a message to send (e.g., 'Hello Network')">
+                <button id="sendMessageBtn" class="btn btn-primary">Send Message</button>
+            </div>
+
+            <!-- Sender and Receiver Visualization -->
+            <div class="sender-receiver-container">
+                <!-- Sender Side -->
+                <div class="sender-side">
+                    <div class="device-box sender-box">
+                        <div class="device-icon">📱</div>
+                        <div class="device-label">Sender</div>
+                        <div class="device-message" id="senderMessage">Ready to send</div>
+                    </div>
+                </div>
+
+                <!-- Network Animation Area -->
+                <div class="network-animation-area">
+                    <div class="animation-canvas" id="animationCanvas">
+                        <svg class="network-svg" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Sender to Receiver connection -->
+                            <defs>
+                                <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                                    <polygon points="0 0, 10 3, 0 6" fill="#078282" />
+                                </marker>
+                                <linearGradient id="layerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#FF6B6B;stop-opacity:0.3" />
+                                    <stop offset="50%" style="stop-color:#078282;stop-opacity:0.5" />
+                                    <stop offset="100%" style="stop-color:#95E1D3;stop-opacity:0.3" />
+                                </linearGradient>
+                            </defs>
+
+                            <!-- Network Path -->
+                            <g class="network-path">
+                                <!-- Sender -->
+                                <rect x="20" y="150" width="80" height="100" rx="5" fill="#FF6B6B" stroke="#078282" stroke-width="2"/>
+                                <text x="60" y="190" text-anchor="middle" fill="white" font-weight="bold" font-size="14">Sender</text>
+                                <text x="60" y="210" text-anchor="middle" fill="white" font-size="11">PC/Device</text>
+
+                                <!-- Network Layers (visual representation) -->
+                                <g class="layers-path">
+                                    <!-- OSI Layers visualization -->
+                                    <rect x="140" y="120" width="300" height="160" rx="5" fill="url(#layerGradient)" stroke="#078282" stroke-width="2" stroke-dasharray="5,5"/>
+                                    <text x="290" y="140" text-anchor="middle" fill="#078282" font-weight="bold" font-size="12">OSI/TCP-IP Layers</text>
+                                    
+                                    <!-- Layer boxes -->
+                                    <rect x="150" y="145" width="60" height="30" rx="3" fill="#FF6B6B" stroke="#333" stroke-width="1"/>
+                                    <text x="180" y="165" text-anchor="middle" fill="white" font-size="10" font-weight="bold">App</text>
+
+                                    <rect x="220" y="145" width="60" height="30" rx="3" fill="#FFE66D" stroke="#333" stroke-width="1"/>
+                                    <text x="250" y="165" text-anchor="middle" fill="#333" font-size="10" font-weight="bold">Transport</text>
+
+                                    <rect x="290" y="145" width="60" height="30" rx="3" fill="#95E1D3" stroke="#333" stroke-width="1"/>
+                                    <text x="320" y="165" text-anchor="middle" fill="#333" font-size="10" font-weight="bold">Network</text>
+
+                                    <rect x="360" y="145" width="60" height="30" rx="3" fill="#38ADA9" stroke="#333" stroke-width="1"/>
+                                    <text x="390" y="165" text-anchor="middle" fill="white" font-size="10" font-weight="bold">Link</text>
+
+                                    <!-- Message path indicator -->
+                                    <line x1="120" y1="200" x2="450" y2="200" stroke="#078282" stroke-width="2" marker-end="url(#arrowhead)"/>
+                                    <text x="285" y="220" text-anchor="middle" fill="#078282" font-size="11" font-weight="bold">Message Flow ➜</text>
+                                </g>
+
+                                <!-- Receiver -->
+                                <rect x="500" y="150" width="80" height="100" rx="5" fill="#95E1D3" stroke="#078282" stroke-width="2"/>
+                                <text x="540" y="190" text-anchor="middle" fill="#333" font-weight="bold" font-size="14">Receiver</text>
+                                <text x="540" y="210" text-anchor="middle" fill="#333" font-size="11">PC/Device</text>
+                            </g>
+
+                            <!-- Message bubble (will be animated) -->
+                            <g id="messageBubble" class="message-bubble">
+                                <circle cx="130" cy="200" r="20" fill="#FF6B6B" stroke="#078282" stroke-width="2"/>
+                                <text id="messageBubbleText" x="130" y="205" text-anchor="middle" fill="white" font-weight="bold" font-size="10">📨</text>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <!-- Layer Details During Animation -->
+                    <div class="layer-details-animation" id="layerDetailsAnimation">
+                        <div class="layer-detail-box">
+                            <div class="layer-info-header">
+                                <span class="layer-name" id="currentLayerName">Waiting...</span>
+                                <span class="layer-number" id="currentLayerNumber"></span>
+                            </div>
+                            <div class="layer-info-body">
+                                <p class="layer-action" id="currentLayerAction">Ready to send message</p>
+                                <p class="layer-data" id="currentLayerData"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Receiver Side -->
+                <div class="receiver-side">
+                    <div class="device-box receiver-box">
+                        <div class="device-icon">📱</div>
+                        <div class="device-label">Receiver</div>
+                        <div class="device-message" id="receiverMessage">Waiting...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Message Status -->
+            <div class="message-status-container">
+                <div class="status-progress" id="statusProgress">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="status-text" id="statusText">Enter a message and click "Send Message" to begin</div>
+            </div>
+        </div>
+
+        <!-- Models Container -->
+        <div class="models-container">
+            <!-- OSI Model -->
+            <div class="model-section">
+                <h2>OSI Model (7 Layers)</h2>
+                <div class="layers-container" id="osiContainer">
+                    <!-- Layers will be dynamically loaded here -->
+                </div>
+            </div>
+
+            <!-- Information Panel -->
+            <div class="info-section">
+                <div class="info-panel">
+                    <h3 id="infoTitle">Welcome</h3>
+                    <div id="infoContent" class="info-content">
+                        <p>Click on any layer to view details about its functions, responsibilities, and protocols.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TCP/IP Model -->
+            <div class="model-section">
+                <h2>TCP/IP Model (4 Layers)</h2>
+                <div class="layers-container" id="tcpipContainer">
+                    <!-- Layers will be dynamically loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Flow Visualization -->
+        <div class="flow-container">
+            <div class="tabs">
+                <button class="tab-button active" data-tab="encapsulation">
+                    Encapsulation (Sender Side)
+                </button>
+                <button class="tab-button" data-tab="decapsulation">
+                    Decapsulation (Receiver Side)
+                </button>
+            </div>
+
+            <div class="tab-content">
+                <div id="encapsulation" class="tab-pane active">
+                    <div class="flow-visualization" id="encapsulationFlow">
+                        <!-- Encapsulation steps will be loaded here -->
+                    </div>
+                </div>
+
+                <div id="decapsulation" class="tab-pane">
+                    <div class="flow-visualization" id="decapsulationFlow">
+                        <!-- Decapsulation steps will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Layer Mapping Table -->
+        <div class="mapping-section">
+            <h2>OSI vs TCP/IP Layer Mapping</h2>
+            <table class="mapping-table">
+                <thead>
+                    <tr>
+                        <th>TCP/IP Layer</th>
+                        <th>OSI Layers</th>
+                        <th>Functions</th>
+                    </tr>
+                </thead>
+                <tbody id="mappingBody">
+                    <!-- Mapping will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>How to Use the Simulator</h2>
+            <div class="help-content">
+                <h3>Features</h3>
+                <ul>
+                    <li><strong>Interactive Layers:</strong> Click on any layer to view its functions, protocols, and responsibilities</li>
+                    <li><strong>Data Flow Animation:</strong> Click "Start Transmission" to see data flow through layers</li>
+                    <li><strong>Encapsulation:</strong> Watch data get encapsulated with headers at each layer (sender side)</li>
+                    <li><strong>Decapsulation:</strong> Watch data get decapsulated with headers removed (receiver side)</li>
+                    <li><strong>Layer Highlighting:</strong> Active layers are highlighted during transmission</li>
+                    <li><strong>Protocol Information:</strong> See all common protocols used at each layer</li>
+                </ul>
+
+                <h3>OSI Model (7 Layers)</h3>
+                <p>The Open Systems Interconnection model provides a reference framework for network communication:</p>
+                <ul>
+                    <li><strong>Application (7):</strong> User applications and services</li>
+                    <li><strong>Presentation (6):</strong> Data formatting and encryption</li>
+                    <li><strong>Session (5):</strong> Connection management</li>
+                    <li><strong>Transport (4):</strong> End-to-end communication (TCP, UDP)</li>
+                    <li><strong>Network (3):</strong> Routing and IP addressing</li>
+                    <li><strong>Data Link (2):</strong> MAC addressing and framing</li>
+                    <li><strong>Physical (1):</strong> Bit transmission and media</li>
+                </ul>
+
+                <h3>TCP/IP Model (4 Layers)</h3>
+                <p>The practical internet model used in real networks:</p>
+                <ul>
+                    <li><strong>Application:</strong> Maps to OSI layers 7, 6, 5</li>
+                    <li><strong>Transport:</strong> Maps to OSI layer 4</li>
+                    <li><strong>Internet:</strong> Maps to OSI layer 3</li>
+                    <li><strong>Link:</strong> Maps to OSI layers 2, 1</li>
+                </ul>
+
+                <h3>Data Encapsulation</h3>
+                <p>Shows how data is wrapped with headers as it moves down layers:</p>
+                <code>Data → Segment → Packet → Frame → Bits</code>
+
+                <h3>Data Decapsulation</h3>
+                <p>Shows how headers are removed as data moves up layers:</p>
+                <code>Bits → Frame → Packet → Segment → Data → Application</code>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
