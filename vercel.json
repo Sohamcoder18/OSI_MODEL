@@ -1,17 +1,10 @@
 {
-  "builds": [
+  "buildCommand": "pip install -r requirements.txt",
+  "outputDirectory": ".",
+  "rewrites": [
     {
-      "src": "app.py",
-      "use": "@vercel/python"
+      "source": "/(.*)",
+      "destination": "/api/index.py"
     }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "app.py"
-    }
-  ],
-  "env": {
-    "FLASK_ENV": "production"
-  }
+  ]
 }
