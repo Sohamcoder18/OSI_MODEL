@@ -1,5 +1,4 @@
 {
-  "buildCommand": "uv pip install -r osi_tcp_ip_simulator/requirements.txt",
   "outputDirectory": ".",
   "rewrites": [
     {
