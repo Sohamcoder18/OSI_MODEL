@@ -808,14 +808,63 @@ class NetworkSimulator {
     resetSimulator() {
         this.selectedOSILayer = null;
         this.selectedTCPIPLayer = null;
+        this.isAnimating = false;
         
+        // Remove active classes from layers
         document.querySelectorAll('.layer.active').forEach(layer => {
             layer.classList.remove('active');
         });
 
+        // Remove active classes from flow steps
         document.querySelectorAll('.flow-step.active').forEach(step => {
             step.classList.remove('active');
         });
+
+        // Reset message input
+        const messageInput = document.getElementById('messageInput');
+        if (messageInput) {
+            messageInput.value = '';
+            messageInput.disabled = false;
+        }
+
+        // Reset sender and receiver messages
+        const senderMessage = document.getElementById('senderMessage');
+        const receiverMessage = document.getElementById('receiverMessage');
+        if (senderMessage) senderMessage.textContent = 'Ready to send';
+        if (receiverMessage) receiverMessage.textContent = 'Waiting...';
+
+        // Reset layer details animation
+        const currentLayerName = document.getElementById('currentLayerName');
+        const currentLayerNumber = document.getElementById('currentLayerNumber');
+        const currentLayerAction = document.getElementById('currentLayerAction');
+        const currentLayerData = document.getElementById('currentLayerData');
+        if (currentLayerName) currentLayerName.textContent = 'Waiting...';
+        if (currentLayerNumber) currentLayerNumber.textContent = '';
+        if (currentLayerAction) currentLayerAction.textContent = 'Ready to send message';
+        if (currentLayerData) currentLayerData.textContent = '';
+
+        // Reset message bubble
+        const messageBubble = document.getElementById('messageBubble');
+        if (messageBubble) {
+            messageBubble.style.opacity = '1';
+            messageBubble.style.transform = 'translateX(0)';
+        }
+
+        // Reset progress bar
+        const progressBar = document.getElementById('progressBar');
+        const statusText = document.getElementById('statusText');
+        if (progressBar) {
+            progressBar.style.width = '0%';
+            progressBar.style.backgroundColor = '#078282';
+        }
+        if (statusText) {
+            statusText.textContent = 'Enter a message and click "Send Message" to begin';
+            statusText.style.color = '#666';
+        }
+
+        // Re-enable buttons
+        const sendMessageBtn = document.getElementById('sendMessageBtn');
+        if (sendMessageBtn) sendMessageBtn.disabled = false;
 
         const welcomeContent = `
             <div class="layer-section">
