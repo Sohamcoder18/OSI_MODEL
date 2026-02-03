@@ -17,9 +17,28 @@
 
     <!-- Main Container -->
     <div class="container main-container">
+        <!-- Tips Section -->
+        <div class="tips-section">
+            <div class="tips-container">
+                <div class="tips-header">
+                    <span class="tips-icon">💡</span>
+                    <span class="tips-title">Quick Tip</span>
+                </div>
+                <div class="tips-content" id="tipsContent">
+                    <!-- Tips will be loaded here -->
+                </div>
+                <div class="tips-footer">
+                    <button class="tips-prev" id="tipsPrevBtn" title="Previous tip">⟨</button>
+                    <div class="tips-progress">
+                        <div class="tips-progress-bar" id="tipsProgressBar"></div>
+                    </div>
+                    <button class="tips-next" id="tipsNextBtn" title="Next tip">⟩</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Control Panel -->
         <div class="control-panel">
-            <button id="startBtn" class="btn btn-primary">Start Transmission</button>
             <button id="resetBtn" class="btn btn-secondary">Reset</button>
             <button id="helpBtn" class="btn btn-info">Help</button>
         </div>
@@ -201,7 +220,11 @@
                     <tr>
                         <th>TCP/IP Layer</th>
                         <th>OSI Layers</th>
+                        <th>Data Unit/PDU</th>
+                        <th>Protocols</th>
                         <th>Functions</th>
+                        <th>Examples/Devices</th>
+                        <th>Key Characteristics</th>
                     </tr>
                 </thead>
                 <tbody id="mappingBody">
