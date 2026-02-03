@@ -1,0 +1,10 @@
+{
+  "appId": "com.soham.osimodel",
+  "appName": "OSI Model",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "https://osi-model-web.vercel.app/",
+    "cleartext": true
+  }
+}

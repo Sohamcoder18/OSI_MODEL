@@ -139,15 +139,16 @@ class NetworkSimulator {
             stepEl.className = 'flow-step';
             stepEl.innerHTML = `
                 <div class="flow-step-title">Stage ${step.stage}</div>
+                <div class="flow-step-layer">${step.header}</div>
                 <div class="flow-step-content"><strong>${step.result}</strong></div>
-                <div class="flow-step-content" style="font-size: 0.8rem; margin-top: 5px;">${step.header}</div>
+                ${step.description ? `<div class="flow-step-description">${step.description}</div>` : ''}
             `;
             encapContainer.appendChild(stepEl);
 
             if (index < this.encapsulationSequence.length - 1) {
                 const arrow = document.createElement('div');
                 arrow.className = 'flow-arrow';
-                arrow.innerHTML = '→';
+                arrow.innerHTML = '↓';
                 encapContainer.appendChild(arrow);
             }
         });
@@ -161,15 +162,16 @@ class NetworkSimulator {
             stepEl.className = 'flow-step';
             stepEl.innerHTML = `
                 <div class="flow-step-title">Stage ${step.stage}</div>
+                <div class="flow-step-layer">${step.header}</div>
                 <div class="flow-step-content"><strong>${step.result}</strong></div>
-                <div class="flow-step-content" style="font-size: 0.8rem; margin-top: 5px;">${step.header}</div>
+                ${step.description ? `<div class="flow-step-description">${step.description}</div>` : ''}
             `;
             decapContainer.appendChild(stepEl);
 
             if (index < this.decapsulationSequence.length - 1) {
                 const arrow = document.createElement('div');
                 arrow.className = 'flow-arrow';
-                arrow.innerHTML = '→';
+                arrow.innerHTML = '↑';
                 decapContainer.appendChild(arrow);
             }
         });
@@ -217,11 +219,19 @@ class NetworkSimulator {
     // Select TCP/IP layer
     selectTCPIPLayer(layer) {
         this.selectedTCPIPLayer = layer.number;
-        const info = `
-            <h4>Equivalent OSI Layers</h4>
-            <p>${layer.osi_layers.map(num => this.osiLayers.find(l => l.number === num)?.name).join(', ')}</p>
-            ${this.formatLayerInfo(layer)}
+        const osiLayerNames = layer.osi_layers
+            .map(num => this.osiLayers.find(l => l.number === num)?.name)
+            .filter(name => name)
+            .join(', ');
+        
+        let info = `
+            <div class="layer-section">
+                <h4>🔗 Equivalent OSI Layers</h4>
+                <p>${osiLayerNames}</p>
+            </div>
         `;
+        info += this.formatLayerInfo(layer);
+        
         this.updateInfoPanel(layer.name, info);
         this.highlightTCPIPLayers(layer.osi_layers);
     }
@@ -264,15 +274,36 @@ class NetworkSimulator {
 
     // Format layer information
     formatLayerInfo(layer) {
-        let html = '<h4>Functions</h4><ul>';
+        let html = '';
+        
+        // Add description
+        if (layer.description) {
+            html += `<div class="layer-description"><p><strong>📝 What This Layer Does:</strong></p><p>${layer.description}</p></div>`;
+        }
+        
+        // Add functions
+        html += '<div class="layer-section"><h4>🎯 Functions</h4><ul>';
         layer.functions.forEach(func => {
             html += `<li>${func}</li>`;
         });
-        html += '</ul><h4>Protocols & Standards</h4><ul>';
+        html += '</ul></div>';
+        
+        // Add examples
+        if (layer.examples && layer.examples.length > 0) {
+            html += '<div class="layer-section"><h4>💡 Real-World Examples</h4><ul>';
+            layer.examples.forEach(example => {
+                html += `<li>${example}</li>`;
+            });
+            html += '</ul></div>';
+        }
+        
+        // Add protocols
+        html += '<div class="layer-section"><h4>🔧 Protocols & Standards</h4><ul>';
         layer.protocols.forEach(proto => {
-            html += `<li>${proto}</li>`;
+            html += `<li><strong>${proto}</strong></li>`;
         });
-        html += '</ul>';
+        html += '</ul></div>';
+        
         return html;
     }
 
@@ -387,7 +418,28 @@ class NetworkSimulator {
             step.classList.remove('active');
         });
 
-        this.updateInfoPanel('Welcome', '<p>Click on any layer to view details. Click "Start Transmission" to see data flow animation.</p>');
+        const welcomeContent = `
+            <div class="layer-section">
+                <h4>👋 Welcome to the OSI vs TCP/IP Model Simulator</h4>
+                <p style="margin: 0;">This interactive tool helps you understand how network communication works by visualizing the OSI and TCP/IP models.</p>
+            </div>
+            <div class="layer-section">
+                <h4>🎯 How to Use:</h4>
+                <ul style="margin: 0;">
+                    <li><strong>Click on any layer</strong> on the left or right to see detailed information about what that layer does</li>
+                    <li><strong>Send a Message:</strong> Enter text and click "Send Message" to see how it flows through all layers</li>
+                    <li><strong>View Encapsulation/Decapsulation:</strong> See how data is wrapped with headers going down and unwrapped going up</li>
+                    <li><strong>Compare Models:</strong> See how the 7 OSI layers map to the 4 practical TCP/IP layers</li>
+                </ul>
+            </div>
+            <div class="layer-section">
+                <h4>📚 Quick Overview:</h4>
+                <p><strong>OSI Model (7 Layers):</strong> A theoretical reference model for network communication</p>
+                <p><strong>TCP/IP Model (4 Layers):</strong> The practical model used on the modern internet</p>
+            </div>
+        `;
+        
+        this.updateInfoPanel('Welcome to the Network Simulator', welcomeContent);
     }
 
     // Show help modal

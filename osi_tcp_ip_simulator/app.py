@@ -34,7 +34,9 @@ def get_osi_layers():
             'functions': layer.functions,
             'protocols': layer.protocols,
             'data_unit': layer.data_unit,
-            'color': layer.color
+            'color': layer.color,
+            'description': layer.description,
+            'examples': layer.examples
         })
     return jsonify({'layers': layers})
 
@@ -50,7 +52,9 @@ def get_tcpip_layers():
             'functions': layer.functions,
             'protocols': layer.protocols,
             'osi_layers': layer.osi_layers,
-            'color': layer.color
+            'color': layer.color,
+            'description': layer.description,
+            'examples': layer.examples
         })
     return jsonify({'layers': layers})
 
@@ -68,7 +72,9 @@ def get_osi_layer_details(layer_num):
                 'functions': layer.functions,
                 'protocols': layer.protocols,
                 'data_unit': layer.data_unit,
-                'color': layer.color
+                'color': layer.color,
+                'description': layer.description,
+                'examples': layer.examples
             }
         })
     return jsonify({'success': False, 'error': 'Layer not found'}), 404
@@ -87,7 +93,9 @@ def get_tcpip_layer_details(layer_num):
                 'functions': layer.functions,
                 'protocols': layer.protocols,
                 'osi_layers': layer.osi_layers,
-                'color': layer.color
+                'color': layer.color,
+                'description': layer.description,
+                'examples': layer.examples
             }
         })
     return jsonify({'success': False, 'error': 'Layer not found'}), 404
