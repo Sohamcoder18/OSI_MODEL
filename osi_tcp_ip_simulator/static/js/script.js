@@ -358,6 +358,7 @@ class NetworkSimulator {
         this.tcpipLayers = [];
         this.encapsulationSequence = [];
         this.decapsulationSequence = [];
+        this.allProtocols = {};
         this.isAnimating = false;
         this.selectedOSILayer = null;
         this.selectedTCPIPLayer = null;
@@ -380,22 +381,25 @@ class NetworkSimulator {
     // Load data from backend API
     async loadData() {
         try {
-            const [osiRes, tcpipRes, encapRes, decapRes] = await Promise.all([
+            const [osiRes, tcpipRes, encapRes, decapRes, protocolRes] = await Promise.all([
                 fetch('/api/osi-layers'),
                 fetch('/api/tcpip-layers'),
                 fetch('/api/encapsulation'),
-                fetch('/api/decapsulation')
+                fetch('/api/decapsulation'),
+                fetch('/api/protocols')
             ]);
 
             const osiData = await osiRes.json();
             const tcpipData = await tcpipRes.json();
             const encapData = await encapRes.json();
             const decapData = await decapRes.json();
+            const protocolData = await protocolRes.json();
 
             this.osiLayers = osiData.layers;
             this.tcpipLayers = tcpipData.layers;
             this.encapsulationSequence = encapData.sequence;
             this.decapsulationSequence = decapData.sequence;
+            this.allProtocols = protocolData.protocols;
         } catch (error) {
             console.error('Error loading data:', error);
         }
@@ -432,14 +436,46 @@ class NetworkSimulator {
             this.startTipRotation();
         });
 
-        // Close modal
-        document.querySelector('.close').addEventListener('click', () => this.closeModal());
+        // Close help modal
+        const helpCloseBtn = document.querySelector('.close');
+        if (helpCloseBtn) {
+            helpCloseBtn.addEventListener('click', () => this.closeModal());
+        }
+        
         window.addEventListener('click', (e) => {
-            const modal = document.getElementById('helpModal');
-            if (e.target === modal) {
+            const helpModal = document.getElementById('helpModal');
+            const protocolModal = document.getElementById('protocolModal');
+            if (e.target === helpModal) {
                 this.closeModal();
             }
+            if (e.target === protocolModal) {
+                this.closeProtocolModal();
+            }
         });
+
+        // Close protocol modal
+        const protocolCloseBtn = document.querySelector('.close-protocol');
+        if (protocolCloseBtn) {
+            protocolCloseBtn.addEventListener('click', () => this.closeProtocolModal());
+        }
+        
+        const closeProtocolBtn = document.getElementById('closeProtocolBtn');
+        if (closeProtocolBtn) {
+            closeProtocolBtn.addEventListener('click', () => this.closeProtocolModal());
+        }
+
+        // Event delegation for protocol links - document level
+        const self = this;
+        document.addEventListener('click', (e) => {
+            const protocolLink = e.target.closest('.protocol-link');
+            if (protocolLink) {
+                e.preventDefault();
+                e.stopPropagation();
+                const proto = protocolLink.dataset.protocol;
+                console.log('🔗 Protocol link clicked:', proto);
+                self.showProtocolDetails(proto);
+            }
+        }, true); // Use capture phase to intercept early
     }
 
     // Render OSI layers
@@ -698,14 +734,124 @@ class NetworkSimulator {
             html += '</ul></div>';
         }
         
-        // Add protocols
-        html += '<div class="layer-section"><h4>🔧 Protocols & Standards</h4><ul>';
+        // Add protocols with clickable buttons (not links to avoid href issues)
+        html += '<div class="layer-section"><h4>🔧 Protocols & Standards (Click to view details)</h4><ul class="protocols-list">';
         layer.protocols.forEach(proto => {
-            html += `<li><strong>${proto}</strong></li>`;
+            html += `<li><button class="protocol-link" data-protocol="${proto}" type="button"><strong>${proto}</strong></button></li>`;
         });
         html += '</ul></div>';
         
         return html;
+    }
+
+    // Show protocol details modal
+    async showProtocolDetails(protocolName) {
+        try {
+            console.log('🔍 showProtocolDetails called for:', protocolName);
+            const encodedName = encodeURIComponent(protocolName);
+            const url = `/api/protocol/${encodedName}`;
+            console.log('📡 Fetching from URL:', url);
+            
+            const response = await fetch(url);
+            console.log('✅ API Response received with status:', response.status);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            console.log('📦 Response data:', data);
+            
+            if (!data.success) {
+                console.error('❌ API returned error:', data.error);
+                alert(`Error: ${data.error}`);
+                return;
+            }
+            
+            const protocol = data.protocol;
+            console.log('✅ Protocol data retrieved:', protocol.name);
+            
+            // Populate modal
+            document.getElementById('protocolName').textContent = protocol.name;
+            document.getElementById('protocolLayer').textContent = `${protocol.layer} Layer`;
+            document.getElementById('protocolOSI').textContent = `OSI L${protocol.osi_layer_num}`;
+            document.getElementById('protocolDescription').textContent = protocol.description;
+            
+            // Populate key points
+            const keyPointsList = document.getElementById('protocolKeyPoints');
+            keyPointsList.innerHTML = '';
+            if (protocol.key_points && Array.isArray(protocol.key_points)) {
+                protocol.key_points.forEach(point => {
+                    const li = document.createElement('li');
+                    li.innerHTML = point;
+                    keyPointsList.appendChild(li);
+                });
+            }
+            
+            // Populate ports
+            const portsSection = document.getElementById('portsSection');
+            if (protocol.ports && protocol.ports.length > 0) {
+                portsSection.style.display = 'block';
+                const portsList = document.getElementById('protocolPorts');
+                portsList.innerHTML = '';
+                protocol.ports.forEach(port => {
+                    const div = document.createElement('div');
+                    div.className = 'port-badge';
+                    div.textContent = port;
+                    portsList.appendChild(div);
+                });
+            } else {
+                portsSection.style.display = 'none';
+            }
+            
+            // Populate use cases
+            const useCasesSection = document.getElementById('useCasesSection');
+            if (protocol.use_cases && protocol.use_cases.length > 0) {
+                useCasesSection.style.display = 'block';
+                const useCasesList = document.getElementById('protocolUseCases');
+                useCasesList.innerHTML = '';
+                protocol.use_cases.forEach(useCase => {
+                    const li = document.createElement('li');
+                    li.textContent = useCase;
+                    useCasesList.appendChild(li);
+                });
+            } else {
+                useCasesSection.style.display = 'none';
+            }
+            
+            // Populate alternatives
+            const alternativesSection = document.getElementById('alternativesSection');
+            if (protocol.alternatives && protocol.alternatives.length > 0) {
+                alternativesSection.style.display = 'block';
+                const alternativesList = document.getElementById('protocolAlternatives');
+                alternativesList.innerHTML = '';
+                protocol.alternatives.forEach(alt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'alternative-btn';
+                    btn.textContent = alt;
+                    btn.onclick = () => this.showProtocolDetails(alt);
+                    alternativesList.appendChild(btn);
+                });
+            } else {
+                alternativesSection.style.display = 'none';
+            }
+            
+            console.log('✅ Modal populated successfully');
+            // Show modal
+            const modal = document.getElementById('protocolModal');
+            modal.style.display = 'block';
+            console.log('✅ Modal displayed');
+        } catch (error) {
+            console.error('❌ Error in showProtocolDetails:', error);
+            console.error('Stack trace:', error.stack);
+            alert(`Error loading protocol: ${error.message}`);
+        }
+    }
+
+    // Close protocol modal
+    closeProtocolModal() {
+        console.log('Closing protocol modal');
+        document.getElementById('protocolModal').style.display = 'none';
     }
 
     // Update info panel
@@ -1182,9 +1328,11 @@ class NetworkSimulator {
 }
 
 // Initialize simulator when DOM is loaded
+let networkSimulator; // Global reference for protocol modal access
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🌐 DOM Loaded - Initializing...');
-    new NetworkSimulator();
+    networkSimulator = new NetworkSimulator();
     new MultiUserManager();
     console.log('✅ All systems initialized');
+    console.log('🔗 Protocol clicks are now active - Click protocol names to view details');
 });

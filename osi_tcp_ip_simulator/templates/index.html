@@ -282,6 +282,66 @@
         </div>
     </div>
 
+    <!-- Protocol Detail Modal -->
+    <div id="protocolModal" class="modal protocol-modal">
+        <div class="modal-content protocol-modal-content">
+            <span class="close close-protocol">&times;</span>
+            <div class="protocol-detail-container">
+                <div class="protocol-header">
+                    <h2 id="protocolName">Protocol Name</h2>
+                    <div class="protocol-meta">
+                        <span class="protocol-layer" id="protocolLayer">Layer</span>
+                        <span class="protocol-osi" id="protocolOSI">OSI Layer</span>
+                    </div>
+                </div>
+
+                <div class="protocol-content">
+                    <!-- Description -->
+                    <div class="protocol-section">
+                        <h3>📝 Description</h3>
+                        <p id="protocolDescription">Protocol description goes here...</p>
+                    </div>
+
+                    <!-- Key Points -->
+                    <div class="protocol-section">
+                        <h3>🎯 Key Features & Characteristics</h3>
+                        <ul id="protocolKeyPoints" class="protocol-points-list">
+                            <!-- Key points will be populated here -->
+                        </ul>
+                    </div>
+
+                    <!-- Ports -->
+                    <div class="protocol-section" id="portsSection">
+                        <h3>🔢 Default Ports</h3>
+                        <div id="protocolPorts" class="protocol-ports-list">
+                            <!-- Ports will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Use Cases -->
+                    <div class="protocol-section" id="useCasesSection">
+                        <h3>💼 Use Cases & Applications</h3>
+                        <ul id="protocolUseCases" class="protocol-list">
+                            <!-- Use cases will be populated here -->
+                        </ul>
+                    </div>
+
+                    <!-- Alternatives -->
+                    <div class="protocol-section" id="alternativesSection">
+                        <h3>🔄 Alternative Protocols</h3>
+                        <div id="protocolAlternatives" class="protocol-alternatives-list">
+                            <!-- Alternatives will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="protocol-actions">
+                    <button class="btn btn-secondary" id="closeProtocolBtn">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/multiuser.js') }}"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>

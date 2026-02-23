@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'osi-model-simulator-secret-key'
 
 # Import models
-from models import OSIModel, TCPIPModel, ENCAPSULATION_SEQUENCE, DECAPSULATION_SEQUENCE
+from models import OSIModel, TCPIPModel, ProtocolDatabase, ENCAPSULATION_SEQUENCE, DECAPSULATION_SEQUENCE
 
 # Initialize models
 osi_model = OSIModel()
@@ -123,6 +123,64 @@ def get_layer_mapping():
             'osi_layers': tcpip_layer.osi_layers
         }
     return jsonify({'mapping': mapping})
+
+
+@app.route('/api/protocols')
+def get_all_protocols():
+    """API endpoint to get all protocols"""
+    protocols = {}
+    for name, protocol in ProtocolDatabase.get_all_protocols().items():
+        protocols[name] = {
+            'name': protocol.name,
+            'layer': protocol.layer,
+            'osi_layer_num': protocol.osi_layer_num,
+            'description': protocol.description,
+            'key_points': protocol.key_points,
+            'ports': protocol.ports,
+            'use_cases': protocol.use_cases,
+            'alternatives': protocol.alternatives
+        }
+    return jsonify({'protocols': protocols})
+
+
+@app.route('/api/protocol/<protocol_name>')
+def get_protocol_details(protocol_name):
+    """API endpoint to get specific protocol details"""
+    protocol = ProtocolDatabase.get_protocol(protocol_name)
+    if protocol:
+        return jsonify({
+            'success': True,
+            'protocol': {
+                'name': protocol.name,
+                'layer': protocol.layer,
+                'osi_layer_num': protocol.osi_layer_num,
+                'description': protocol.description,
+                'key_points': protocol.key_points,
+                'ports': protocol.ports,
+                'use_cases': protocol.use_cases,
+                'alternatives': protocol.alternatives
+            }
+        })
+    return jsonify({'success': False, 'error': 'Protocol not found'}), 404
+
+
+@app.route('/api/protocols/layer/<layer_name>')
+def get_protocols_by_layer(layer_name):
+    """API endpoint to get protocols by layer"""
+    protocols = ProtocolDatabase.get_protocols_by_layer(layer_name)
+    result = {}
+    for name, protocol in protocols.items():
+        result[name] = {
+            'name': protocol.name,
+            'layer': protocol.layer,
+            'osi_layer_num': protocol.osi_layer_num,
+            'description': protocol.description,
+            'key_points': protocol.key_points,
+            'ports': protocol.ports,
+            'use_cases': protocol.use_cases,
+            'alternatives': protocol.alternatives
+        }
+    return jsonify({'protocols': result})
 
 
 if __name__ == '__main__':

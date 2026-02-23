@@ -1872,6 +1872,272 @@ body {
     padding-left: 12px;
 }
 
+/* Protocol Link Styling */
+.protocol-link {
+    color: var(--primary-color);
+    background: transparent;
+    border: none;
+    cursor: pointer !important;
+    font-weight: 600;
+    transition: var(--transition);
+    padding: 0;
+    font-size: inherit;
+    display: inline;
+    text-decoration: none;
+    pointer-events: auto !important;
+    z-index: 100;
+    position: relative;
+}
+
+.protocol-link:hover {
+    color: var(--secondary-color);
+    text-decoration: underline;
+    transform: scale(1.05);
+}
+
+.protocol-link:active {
+    color: var(--accent-color);
+}
+
+.protocol-link:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Make parent list items also interactive */
+.protocols-list li {
+    pointer-events: auto;
+}
+
+.protocols-list li .protocol-link {
+    cursor: pointer;
+}
+
+/* Protocols List */
+.protocols-list {
+    list-style: none;
+    padding: 0;
+}
+
+.protocols-list li {
+    padding: 8px 12px;
+    margin: 5px 0;
+    background: linear-gradient(90deg, rgba(7, 130, 130, 0.05) 0%, transparent 100%);
+    border-left: 3px solid var(--primary-color);
+    border-radius: 4px;
+}
+
+.protocols-list li:hover {
+    background: linear-gradient(90deg, rgba(7, 130, 130, 0.1) 0%, transparent 100%);
+    transform: translateX(5px);
+    transition: var(--transition);
+}
+
+/* Protocol Modal */
+.protocol-modal {
+    z-index: 1001;
+}
+
+.protocol-modal-content {
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0;
+    border-radius: 10px;
+    box-shadow: var(--shadow-xl);
+    position: relative;
+}
+
+.protocol-detail-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.protocol-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 10px 10px 0 0;
+    border-bottom: 3px solid var(--accent-color);
+    position: relative;
+}
+
+.protocol-header h2 {
+    margin: 0 0 15px 0;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.protocol-meta {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.protocol-layer,
+.protocol-osi {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.protocol-content {
+    padding: 30px;
+    flex-grow: 1;
+}
+
+.protocol-section {
+    margin-bottom: 30px;
+}
+
+.protocol-section h3 {
+    color: var(--primary-color);
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.protocol-section p {
+    line-height: 1.8;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.protocol-points-list {
+    list-style: none;
+    padding: 0;
+}
+
+.protocol-points-list li {
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    background: #f5f5f5;
+    border-left: 4px solid var(--accent-color);
+    border-radius: 5px;
+    line-height: 1.6;
+    color: #333;
+    transition: var(--transition);
+}
+
+.protocol-points-list li:hover {
+    background: #eee;
+    transform: translateX(5px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.protocol-ports-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.port-badge {
+    background: linear-gradient(135deg, #FFE66D 0%, #FFD93D 100%);
+    color: #333;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.protocol-list {
+    list-style: none;
+    padding: 0;
+}
+
+.protocol-list li {
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    background: #e8f5e9;
+    border-left: 4px solid #4caf50;
+    border-radius: 5px;
+    color: #333;
+}
+
+.protocol-alternatives-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.alternative-btn {
+    background: linear-gradient(135deg, var(--secondary-color) 0%, teal 100%);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.alternative-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.protocol-actions {
+    padding: 20px 30px;
+    border-top: 1px solid var(--border-color);
+    background: #f9f9f9;
+    border-radius: 0 0 10px 10px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.close-protocol {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: var(--transition);
+    z-index: 10;
+    background: rgba(0,0,0,0.2);
+    padding: 5px 10px;
+    border-radius: 5px;
+    line-height: 1;
+    border: none;
+}
+
+.close-protocol:hover,
+.close-protocol:focus {
+    color: var(--accent-color);
+    background: rgba(0,0,0,0.4);
+    text-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+/* Protocol Modal Scrollbar */
+.protocol-modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.protocol-modal-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.protocol-modal-content::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+.protocol-modal-content::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+}
+
 /* Mobile Responsive Improvements */
 @media (max-width: 768px) {
     .session-options {
@@ -1882,6 +2148,12 @@ body {
         width: 95%;
         padding: 20px;
         margin: 20% auto;
+    }
+
+    .protocol-modal-content {
+        width: 95%;
+        margin: 10% auto;
+        max-height: 80vh;
     }
     
     .header {
@@ -1899,4 +2171,27 @@ body {
     .btn {
         width: 100%;
     }
-}
+
+    .protocol-header {
+        padding: 20px;
+    }
+
+    .protocol-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .protocol-content {
+        padding: 20px;
+    }
+
+    .protocol-meta {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+        .protocol-layer,
+        .protocol-osi {
+            width: 100%;
+            text-align: center;
+        }
+    }
