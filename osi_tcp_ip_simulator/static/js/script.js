@@ -713,13 +713,72 @@ class NetworkSimulator {
     formatLayerInfo(layer) {
         let html = '';
         
+        // Add educational header
+        html += `<div class="layer-education-header"><h3>📚 Understanding ${layer.name}</h3></div>`;
+        
         // Add description
         if (layer.description) {
             html += `<div class="layer-description"><p><strong>📝 What This Layer Does:</strong></p><p>${layer.description}</p></div>`;
         }
         
+        // Add learning objectives
+        const learningObjectives = {
+            7: [
+                "Understand how applications interact with networks",
+                "Learn about web protocols and email systems",
+                "Recognize DNS role in domain resolution",
+                "Understand how firewalls filter application traffic"
+            ],
+            6: [
+                "Understand data encryption and security",
+                "Learn data compression techniques",
+                "Recognize character encoding formats",
+                "Understand SSL/TLS for secure communications"
+            ],
+            5: [
+                "Understand session establishment and management",
+                "Learn dialogue control in communications",
+                "Understand connection synchronization",
+                "Recognize when sessions are used in practice"
+            ],
+            4: [
+                "Understand TCP for reliable delivery",
+                "Understand UDP for fast unreliable delivery",
+                "Learn about port numbers and multiplexing",
+                "Understand flow control and error checking"
+            ],
+            3: [
+                "Understand IP addressing (IPv4 and IPv6)",
+                "Learn about routing and routers",
+                "Understand packet forwarding between networks",
+                "Learn ICMP for network diagnostics"
+            ],
+            2: [
+                "Understand MAC addresses and local networks",
+                "Learn about switches and frame forwarding",
+                "Understand Ethernet technology",
+                "Learn about VLAN segmentation"
+            ],
+            1: [
+                "Understand physical transmission media",
+                "Learn about copper and fiber cables",
+                "Understand wireless transmission",
+                "Learn about signal encoding"
+            ]
+        };
+        
+        if (learningObjectives[layer.number]) {
+            html += '<div class="layer-section learning-objectives">';
+            html += '<h4>🎯 Learning Objectives</h4>';
+            html += '<ul>';
+            learningObjectives[layer.number].forEach(obj => {
+                html += `<li>${obj}</li>`;
+            });
+            html += '</ul></div>';
+        }
+        
         // Add functions
-        html += '<div class="layer-section"><h4>🎯 Functions</h4><ul>';
+        html += '<div class="layer-section"><h4>⚙️ Core Functions</h4><ul>';
         layer.functions.forEach(func => {
             html += `<li>${func}</li>`;
         });
@@ -734,12 +793,56 @@ class NetworkSimulator {
             html += '</ul></div>';
         }
         
-        // Add protocols with clickable buttons (not links to avoid href issues)
-        html += '<div class="layer-section"><h4>🔧 Protocols & Standards (Click to view details)</h4><ul class="protocols-list">';
-        layer.protocols.forEach(proto => {
-            html += `<li><button class="protocol-link" data-protocol="${proto}" type="button"><strong>${proto}</strong></button></li>`;
+        // Data format standards (non-protocols - not clickable)
+        const dataFormatStandards = [
+            'JPEG', 'MPEG', 'GIF', 'ASCII', 'UTF-8', 'UTF-16', 
+            'ZIP', 'GZIP', 'MPEG-4', 'H.264', 'VP9', 'AV1'
+        ];
+        
+        // Separate protocols from format standards
+        const protocols = [];
+        const standards = [];
+        
+        layer.protocols.forEach(item => {
+            if (dataFormatStandards.includes(item)) {
+                standards.push(item);
+            } else {
+                protocols.push(item);
+            }
         });
-        html += '</ul></div>';
+        
+        // Add protocols with clickable buttons
+        if (protocols.length > 0) {
+            html += '<div class="layer-section"><h4>🔧 Network Protocols (Click to view details)</h4><ul class="protocols-list">';
+            protocols.forEach(proto => {
+                html += `<li><button class="protocol-link" data-protocol="${proto}" type="button"><strong>${proto}</strong></button></li>`;
+            });
+            html += '</ul></div>';
+        }
+        
+        // Add data format standards as non-clickable items
+        if (standards.length > 0) {
+            html += '<div class="layer-section"><h4>📋 Data Format Standards (Non-Clickable)</h4><ul class="standards-list">';
+            standards.forEach(std => {
+                html += `<li><span class="format-standard">${std}</span></li>`;
+            });
+            html += '<p style="font-size: 0.9em; margin-top: 10px; color: #666;"><em>Note: These are data format standards handled by this layer, not network communication protocols.</em></p></ul></div>';
+        }
+        
+        // Teaching tip
+        const teachingTips = {
+            7: "💡 Tip: Show students how email goes from application → internet by typing 'Hello' in the message simulator!",
+            6: "💡 Tip: Emphasize that SSL/TLS is why 'https://' is green in the browser, showing data is encrypted.",
+            5: "💡 Tip: Use the analogy of a phone call - connection setup, dialogue, and graceful hangup.",
+            4: "💡 Tip: Ask students: If a video stream drops 1% of packets, why is it still watchable? Answer: UDP at Layer 4.",
+            3: "💡 Tip: Compare routing to postal service - routers read IP addresses like postal codes.",
+            2: "💡 Tip: Explain that MAC addresses work only on same network; IP addresses work across internet.",
+            1: "💡 Tip: Show the physical cables in the server room or discussed fiber optics crossing oceans."
+        };
+        
+        if (teachingTips[layer.number]) {
+            html += `<div class="layer-section teaching-tip"><p>${teachingTips[layer.number]}</p></div>`;
+        }
         
         return html;
     }
@@ -834,6 +937,49 @@ class NetworkSimulator {
                 });
             } else {
                 alternativesSection.style.display = 'none';
+            }
+            
+            // Add educational content for students
+            const educationContent = {
+                'HTTP': '🌐 Think of HTTP like posting a postcard - anyone can read it. Perfect for learning web basics but not for sensitive data.',
+                'HTTPS': '🔒 HTTPS is like putting your postcard in an envelope with a tamper-proof seal. Essential for real-world security.',
+                'DNS': '📖 DNS is the phonebook of the internet - without it, you\'d need to memorize IP addresses instead of domain names!',
+                'TCP': '✅ TCP ensures delivery like mail with confirmation - slow but reliable. Used when accuracy matters more than speed.',
+                'UDP': '⚡ UDP is like shouting across a room - fast but nobody confirms they heard you. Used when speed matters more than perfection.',
+                'IP': '🗺️ IP routing is like the postal service - each router reads the destination and forwards the packet along the best path.',
+                'ARP': '🔍 ARP bridges the gap between logical (IP) and physical (MAC) addressing - essential for local network communication.',
+                'Ethernet': '🖧 The foundation of modern LANs - simple, efficient, and everywhere. Understanding Ethernet helps you troubleshoot networks.',
+                'SSL': '🔐 SSL/TLS makes the internet safe. Without it, hackers could steal your passwords, credit cards, and personal data.',
+                'SSH': '🔑 SSH is the secure way to remotely access computers. It\'s like having a secure telephone line to a remote server instead of shouting commands.'
+            };
+            
+            const educationEl = document.getElementById('protocolEducation');
+            if (educationContent[protocol.name.split(' ')[0]]) {
+                educationEl.innerHTML = `<p>${educationContent[protocol.name.split(' ')[0]]}</p>`;
+            } else {
+                educationEl.innerHTML = '<p>This protocol is an important part of modern networking. Study its key features to understand network communication.</p>';
+            }
+            
+            // Add importance explanation
+            const importanceContent = {
+                'HTTP': 'Fundamental to understanding how the web works. Every website you visit uses HTTP or HTTPS.',
+                'HTTPS': 'Critical for modern security. Understanding encryption basics is essential for any IT professional.',
+                'DNS': 'Enables human-friendly domain names instead of hard-to-remember IP addresses. Critical internet infrastructure.',
+                'TCP': 'Most widely used protocol for reliable communication. Knowing TCP vs UDP is essential for network design.',
+                'UDP': 'Essential for real-time applications. Understanding tradeoffs between reliability and speed is key to networking.',
+                'IP': 'The backbone of internet routing. Understanding IP addressing (IPv4/IPv6) is fundamental to networking.',
+                'ARP': 'Bridges logical and physical addressing. Understanding ARP is crucial for LAN troubleshooting.',
+                'Ethernet': 'Dominates LAN technology. Understanding Ethernet helps with network setup and troubleshooting.',
+                'SSL': 'Protects almost all sensitive internet traffic. Understanding encryption is essential for cybersecurity.',
+                'SSH': 'Standard for secure remote access. Essential knowledge for system administrators and DevOps engineers.'
+            };
+            
+            const importanceEl = document.getElementById('protocolImportance');
+            const protocolKey = protocol.name.split(' ')[0];
+            if (importanceContent[protocolKey]) {
+                importanceEl.innerHTML = `<p>✨ ${importanceContent[protocolKey]}</p>`;
+            } else {
+                importanceEl.innerHTML = '<p>✨ This protocol plays a vital role in modern network communication and is important to understand for networking professionals.</p>';
             }
             
             console.log('✅ Modal populated successfully');

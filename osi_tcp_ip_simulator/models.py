@@ -25,7 +25,7 @@ class OSIModel:
             OSILayer(
                 7, "Application Layer",
                 ["User Interface", "Email, Web Services", "Resource Sharing"],
-                ["HTTP", "HTTPS", "FTP", "SMTP", "POP3", "IMAP", "DNS", "TELNET"],
+                ["HTTP", "HTTPS", "FTP", "SFTP", "SMTP", "POP3", "IMAP", "DNS", "SSH", "TELNET", "SNMP"],
                 "Data",
                 "#FF6B6B",
                 "The Application Layer is the topmost layer that provides network services directly to user applications. It handles user requests and returns responses, managing all user interactions with the network. This layer is where web browsers, email clients, and file transfer applications operate.",
@@ -40,22 +40,22 @@ class OSIModel:
             OSILayer(
                 6, "Presentation Layer",
                 ["Data Encryption", "Compression", "Translation"],
-                ["SSL/TLS", "JPEG", "MPEG", "GIF", "ASCII"],
+                ["SSL"],
                 "Data",
                 "#FF8C42",
-                "The Presentation Layer is responsible for preparing data for transmission and display. It handles data encryption for security, compression to reduce size, and formatting to ensure compatibility between different systems. Think of it as a translator and formatter for data.",
+                "The Presentation Layer is responsible for preparing data for transmission and display. It handles data encryption for security, compression to reduce size, and formatting to ensure compatibility between different systems. Think of it as a translator and formatter for data. Note: JPEG, MPEG, GIF, ASCII are data formats handled by this layer but aren't network protocols themselves.",
                 [
                     "🔒 Encryption: SSL/TLS encrypts sensitive data (like passwords) for secure transmission",
-                    "📸 Image Compression: Converting images to JPEG format reduces file size",
-                    "🎬 Video Compression: MPEG codec compresses video for streaming",
+                    "📸 Image Compression: Formats like JPEG compress images for transmission",
+                    "🎬 Video Compression: Codecs like MPEG compress video for streaming",
                     "📝 Character Encoding: Converting between ASCII, Unicode, and other formats",
-                    "💾 Data Compression: ZIP files compress data before transmission"
+                    "💾 Data Compression: ZIP and other compression algorithms reduce transmission size"
                 ]
             ),
             OSILayer(
                 5, "Session Layer",
                 ["Connection Management", "Dialogue Control", "Synchronization"],
-                ["NetBIOS", "SAP", "SMB", "SSH"],
+                ["NetBIOS", "SMB"],
                 "Data",
                 "#FFC93C",
                 "The Session Layer manages the conversation (session) between applications. It establishes, maintains, and terminates connections between computers. This layer ensures that data exchange happens in an organized manner and handles session recovery if connections are lost.",
@@ -100,7 +100,7 @@ class OSIModel:
             OSILayer(
                 2, "Data Link Layer",
                 ["Frame Creation", "MAC Addressing", "Physical Addressing"],
-                ["Ethernet", "PPP", "MAC", "HDLC", "Frame Relay"],
+                ["Ethernet", "Wi-Fi", "PPP", "MAC", "HDLC", "Frame Relay"],
                 "Frame",
                 "#38ADA9",
                 "The Data Link Layer manages communication between adjacent nodes on the same network. It uses MAC addresses (physical addresses like 00:1A:2B:3C:4D:5E) to identify devices on a local network segment. It also handles error detection and organizes data into frames.",
